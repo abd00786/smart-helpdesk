@@ -9,3 +9,8 @@ build/
 .idea/
 .swp
 ~
+GIT_SETUP_COMPLETE.md
+GITHUB_PUSH_COMMANDS.md
+GITHUB_SETUP.md
+READY_TO_PUSH.md
+setup-git-commits.ps1
