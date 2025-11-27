@@ -52,84 +52,84 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 py-6 sm:py-8 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         {/* Welcome Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-4xl">👋</span>
-            <h1 className="text-4xl font-bold text-gray-900">Welcome to Smart Helpdesk</h1>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
+            <span className="text-3xl sm:text-4xl">👋</span>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Welcome to Smart Helpdesk</h1>
           </div>
-          <p className="text-gray-600 text-lg">Manage your support tickets efficiently</p>
+          <p className="text-gray-600 text-sm sm:text-base lg:text-lg">Manage your support tickets efficiently</p>
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
           {stats.map((stat, idx) => (
             <button
               key={idx}
               onClick={stat.action}
-              className={`rounded-xl bg-linear-to-br ${stat.color} p-6 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition cursor-pointer`}
+              className={`rounded-lg sm:rounded-xl bg-linear-to-br ${stat.color} p-4 sm:p-6 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition cursor-pointer`}
             >
-              <div className="text-4xl mb-2">{stat.icon}</div>
-              <div className="text-lg font-semibold">{stat.label}</div>
+              <div className="text-3xl sm:text-4xl mb-2">{stat.icon}</div>
+              <div className="text-base sm:text-lg font-semibold">{stat.label}</div>
             </button>
           ))}
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Create Ticket Form - Takes 2 cols */}
-          <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="text-3xl">📝</span>
-              <h2 className="text-2xl font-bold text-gray-900">Create New Ticket</h2>
+          <div className="lg:col-span-2 bg-white rounded-lg sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+            <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
+              <span className="text-2xl sm:text-3xl">📝</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Ticket</h2>
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-50 border-l-4 border-red-500 p-4 mb-6 flex gap-3">
-                <span className="text-red-600 text-xl">❌</span>
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="rounded-lg sm:rounded-xl bg-red-50 border-l-4 border-red-500 p-3 sm:p-4 mb-4 sm:mb-6 flex gap-2 sm:gap-3">
+                <span className="text-red-600 text-lg sm:text-xl shrink-0">❌</span>
+                <p className="text-xs sm:text-sm text-red-700">{error}</p>
               </div>
             )}
 
             {success && (
-              <div className="rounded-xl bg-green-50 border-l-4 border-green-500 p-4 mb-6 flex gap-3 animate-pulse">
-                <span className="text-green-600 text-xl">✓</span>
-                <p className="text-sm text-green-700 font-semibold">{success}</p>
+              <div className="rounded-lg sm:rounded-xl bg-green-50 border-l-4 border-green-500 p-3 sm:p-4 mb-4 sm:mb-6 flex gap-2 sm:gap-3 animate-pulse">
+                <span className="text-green-600 text-lg sm:text-xl shrink-0">✓</span>
+                <p className="text-xs sm:text-sm text-green-700 font-semibold">{success}</p>
               </div>
             )}
 
-            <form onSubmit={handleCreateTicket} className="space-y-5">
+            <form onSubmit={handleCreateTicket} className="space-y-4 sm:space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Issue Title *</label>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Issue Title *</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Network connection issue"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900 text-sm sm:text-base"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Description *</label>
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Description *</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe your issue in detail..."
                   rows="4"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900 resize-none"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900 resize-none text-sm sm:text-base"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Category</label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900 text-sm sm:text-base"
                   >
                     <option value="hardware">Hardware</option>
                     <option value="software">Software</option>
@@ -139,11 +139,11 @@ export default function Dashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Priority</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Priority</label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition text-gray-900 text-sm sm:text-base"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -156,7 +156,7 @@ export default function Dashboard() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-6 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg"
+                className="w-full py-2 sm:py-3 px-4 sm:px-6 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg text-sm sm:text-base"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
