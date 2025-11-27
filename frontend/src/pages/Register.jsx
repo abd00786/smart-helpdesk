@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
+import { validatePassword, getPasswordStrength } from "../utils/passwordValidator";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -8,13 +9,34 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [passwordErrors, setPasswordErrors] = useState([]);
   const navigate = useNavigate();
+
+  const handlePasswordChange = (e) => {
+    const pwd = e.target.value;
+    setPassword(pwd);
+    
+    if (pwd) {
+      const validation = validatePassword(pwd);
+      setPasswordErrors(validation.errors);
+    } else {
+      setPasswordErrors([]);
+    }
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     
     if (!name || !email || !password) {
       setError("Please fill in all fields");
+      return;
+    }
+
+    // Validate password
+    const validation = validatePassword(password);
+    if (!validation.isValid) {
+      setPasswordErrors(validation.errors);
+      setError("Password does not meet security requirements");
       return;
     }
     
@@ -29,6 +51,16 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+  const strengthColors = {
+    gray: 'bg-gray-300',
+    red: 'bg-red-500',
+    orange: 'bg-orange-500',
+    yellow: 'bg-yellow-500',
+    blue: 'bg-blue-500',
+    green: 'bg-green-500'
   };
 
   return (
@@ -82,10 +114,49 @@ export default function Register() {
                 type="password"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 transition text-gray-900 placeholder-gray-500"
+                onChange={handlePasswordChange}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 transition text-gray-900 placeholder-gray-500 ${
+                  password && passwordErrors.length === 0 
+                    ? 'border-green-500 focus:border-green-600 focus:ring-green-200' 
+                    : password && passwordErrors.length > 0
+                    ? 'border-red-500 focus:border-red-600 focus:ring-red-200'
+                    : 'border-gray-300 focus:border-green-500 focus:ring-green-200'
+                }`}
               />
-              <p className="text-xs text-gray-500 mt-1">At least 8 characters recommended</p>
+
+              {/* Password Strength Indicator */}
+              {password && (
+                <div className="mt-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${strengthColors[passwordStrength.color]} transition-all`}
+                        style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-semibold text-${passwordStrength.color}-600`}>
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+
+                  {/* Password Requirements */}
+                  {passwordErrors.length > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 space-y-1">
+                      {passwordErrors.map((err, idx) => (
+                        <p key={idx} className="text-xs text-red-700 flex items-center gap-2">
+                          <span>✕</span> {err}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
+                  {passwordErrors.length === 0 && password.length >= 8 && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-2">
+                      <p className="text-xs text-green-700 font-semibold">✓ Password is secure</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <button
