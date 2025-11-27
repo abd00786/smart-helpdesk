@@ -8,6 +8,7 @@ import Tickets from './pages/Tickets';
 import TicketDetail from './pages/TicketDetail';
 import Analytics from './pages/Analytics';
 import ITSupport from './pages/ITSupport';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 const PrivateRoute = ({ children, token }) => {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/analytics" element={<PrivateRoute token={token}><Analytics /></PrivateRoute>} />
         <Route path="/it-support" element={<PrivateRoute token={token}><ITSupport /></PrivateRoute>} />
         <Route path="/" element={token ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
