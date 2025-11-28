@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 import connectDB from "./config/db.js";
 import { createRedisClient, getRedisClient, isRedisConnected } from "./config/redis.js";
 
@@ -36,16 +37,21 @@ app.use(morgan("dev"));
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
+  const mongodbStatus = 
+    mongoose.connection.readyState === 1 ? "connected" : 
+    mongoose.connection.readyState === 0 ? "disconnected" :
+    mongoose.connection.readyState === 2 ? "connecting" :
+    "unknown";
+
   const health = {
     status: "healthy",
     timestamp: new Date().toISOString(),
     services: {
-      mongodb: "pending",
+      mongodb: mongodbStatus,
       redis: isRedisConnected() ? "connected" : "disconnected",
     },
   };
 
-  // Check MongoDB by trying a simple query
   res.status(200).json(health);
 });
 
