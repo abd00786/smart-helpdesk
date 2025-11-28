@@ -15,7 +15,6 @@ connectDB();
 
 const app = express();
 
-// CORS Configuration
 const corsOptions = {
   origin: process.env.CORS_ORIGIN?.split(",") || [
     "http://localhost:3000",
@@ -26,26 +25,24 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"]
 };
 
-// 🔥 REQUIRED FOR BACK4APP — handles preflight (OPTIONS)
+// SAFE FOR EXPRESS 5
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options(/.*/, cors(corsOptions)); // <--- FIX (regex instead of "*")
 
-// 🔥 BACK4APP CORS PATCH (adds correct headers manually)
+// Manual CORS patch
 app.use((req, res, next) => {
-  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
+  const allowed = process.env.CORS_ORIGIN?.split(",") || [];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
+  if (allowed.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+  if (req.method === "OPTIONS") return res.sendStatus(200);
 
   next();
 });
@@ -58,7 +55,6 @@ app.use("/api/tickets", ticketRoutes);
 app.use("/api/diagnostics", diagnosticsRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
@@ -66,7 +62,6 @@ app.get("/api/health", (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Graceful shutdown
 process.on("SIGINT", async () => {
   if (redisClient && redisClient.isOpen) {
     await redisClient.quit();
