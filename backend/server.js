@@ -17,14 +17,39 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:3000", "http://localhost:5173"],
+  origin: process.env.CORS_ORIGIN?.split(",") || [
+    "http://localhost:3000",
+    "http://localhost:5173"
+  ],
   credentials: true,
-  optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
+// 🔥 REQUIRED FOR BACK4APP — handles preflight (OPTIONS)
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// 🔥 BACK4APP CORS PATCH (adds correct headers manually)
+app.use((req, res, next) => {
+  const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -43,7 +68,7 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
-  if (redisClient.isOpen) {
+  if (redisClient && redisClient.isOpen) {
     await redisClient.quit();
   }
   process.exit(0);
