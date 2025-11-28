@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import redisClient from "./config/redis.js";
 
 import authRoutes from "./routes/auth.routes.js";
 import ticketRoutes from "./routes/ticket.routes.js";
@@ -24,3 +25,11 @@ app.use("/api/analytics", analyticsRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  if (redisClient.isOpen) {
+    await redisClient.quit();
+  }
+  process.exit(0);
+});

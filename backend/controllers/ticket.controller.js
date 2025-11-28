@@ -1,5 +1,6 @@
 import Ticket from "../models/ticket.model.js";
 import Activity from "../models/activity.model.js";
+import { setCacheData, getCacheData, deleteCacheData, invalidateCachePattern, getCacheKeys } from "../utils/cache.js";
 
 export const createTicket = async (req, res) => {
   try {
@@ -26,6 +27,10 @@ export const createTicket = async (req, res) => {
       description: "Ticket created",
     });
 
+    // Invalidate cache for ticket list and analytics
+    await invalidateCachePattern("tickets:list:*");
+    await invalidateCachePattern("analytics:*");
+
     res.status(201).json(ticket);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -41,10 +46,24 @@ export const getTickets = async (req, res) => {
     if (priority) filter.priority = priority;
     if (assignee) filter.assignee = assignee;
 
+    // Create cache key based on filters
+    const filterString = JSON.stringify(filter);
+    const cacheKey = getCacheKeys.ticketsList(filterString);
+
+    // Try to get from cache
+    const cachedTickets = await getCacheData(cacheKey);
+    if (cachedTickets) {
+      console.log("✓ Tickets from cache");
+      return res.json(cachedTickets);
+    }
+
     const tickets = await Ticket.find(filter)
       .populate("reporter", "name email")
       .populate("assignee", "name email")
       .sort({ createdAt: -1 });
+
+    // Cache the result for 1 hour
+    await setCacheData(cacheKey, tickets, 3600);
 
     res.json(tickets);
   } catch (err) {
@@ -54,6 +73,15 @@ export const getTickets = async (req, res) => {
 
 export const getTicketById = async (req, res) => {
   try {
+    const cacheKey = getCacheKeys.ticketDetail(req.params.id);
+
+    // Try to get from cache
+    const cachedTicket = await getCacheData(cacheKey);
+    if (cachedTicket) {
+      console.log("✓ Ticket from cache");
+      return res.json(cachedTicket);
+    }
+
     const ticket = await Ticket.findById(req.params.id)
       .populate("reporter", "name email")
       .populate("assignee", "name email");
@@ -61,6 +89,9 @@ export const getTicketById = async (req, res) => {
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
     }
+
+    // Cache the result
+    await setCacheData(cacheKey, ticket, 3600);
 
     res.json(ticket);
   } catch (err) {
@@ -107,6 +138,11 @@ export const updateTicketStatus = async (req, res) => {
       newValue: status,
       description: `Status changed from ${oldStatus} to ${status}`,
     });
+
+    // Invalidate cache for this ticket and list
+    await deleteCacheData(getCacheKeys.ticketDetail(id));
+    await invalidateCachePattern("tickets:list:*");
+    await invalidateCachePattern("analytics:*");
 
     res.json(ticket);
   } catch (err) {
