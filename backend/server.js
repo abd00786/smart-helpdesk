@@ -15,9 +15,8 @@ connectDB();
 
 const app = express();
 
-// CORS Configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:3000", "http://localhost:5173"],
+  origin: process.env.CORS_ORIGIN?.split(","),
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -25,6 +24,17 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // REQUIRED for Back4App
+
+// Back4App CORS header patch
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN.split(",")[0]);
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  next();
+});
+
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -33,7 +43,6 @@ app.use("/api/tickets", ticketRoutes);
 app.use("/api/diagnostics", diagnosticsRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
@@ -41,7 +50,6 @@ app.get("/api/health", (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Graceful shutdown
 process.on("SIGINT", async () => {
   if (redisClient.isOpen) {
     await redisClient.quit();
