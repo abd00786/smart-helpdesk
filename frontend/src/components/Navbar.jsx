@@ -21,36 +21,36 @@ export default function Navbar({ token, setToken }) {
 
   return (
     <nav className="bg-linear-to-r from-slate-900 to-slate-800 text-white shadow-2xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-        <div className="flex justify-between items-center h-14 sm:h-16">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 md:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16 md:h-16">
           {/* Logo */}
           <div
             onClick={() => navigate("/")}
-            className="flex items-center gap-1 sm:gap-2 cursor-pointer hover:opacity-80 transition shrink-0"
+            className="flex items-center gap-1 sm:gap-2 cursor-pointer hover:opacity-80 transition shrink-0 min-w-0"
           >
-            <span className="text-2xl sm:text-3xl">🎫</span>
+            <span className="text-2xl sm:text-3xl flex-shrink-0">🎫</span>
             <div className="hidden sm:block">
-              <div className="text-base sm:text-xl font-bold leading-none">Smart Helpdesk</div>
-              <div className="text-xs text-gray-400">Support System</div>
+              <div className="text-sm sm:text-base md:text-lg font-bold leading-none">Smart Helpdesk</div>
+              <div className="text-xs text-gray-400 hidden md:inline">Support System</div>
             </div>
-            <div className="sm:hidden text-sm font-bold">Helpdesk</div>
+            <div className="sm:hidden text-xs font-bold">HD</div>
           </div>
 
           {/* Desktop Navigation */}
           {token ? (
             <>
-              <div className="hidden md:flex items-center gap-1 lg:gap-2">
+              <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
                 {navItems.map((item) => (
                   <button
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    className={`flex items-center gap-1 lg:gap-2 px-2 lg:px-4 py-2 rounded-lg font-medium transition text-sm lg:text-base ${
+                    className={`flex items-center gap-1 px-2 md:px-3 lg:px-4 py-2 rounded-lg font-medium transition text-xs md:text-sm lg:text-base whitespace-nowrap ${
                       location.pathname === item.path
                         ? "bg-blue-600 text-white shadow-lg"
                         : "text-gray-300 hover:bg-slate-700 hover:text-white"
                     }`}
                   >
-                    <span>{item.icon}</span>
+                    <span className="flex-shrink-0">{item.icon}</span>
                     <span className="hidden lg:inline">{item.label}</span>
                   </button>
                 ))}
@@ -58,9 +58,9 @@ export default function Navbar({ token, setToken }) {
 
               <button
                 onClick={handleLogout}
-                className="hidden md:flex items-center gap-2 px-3 lg:px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition text-sm lg:text-base"
+                className="hidden md:flex items-center gap-1 md:gap-2 px-2 md:px-3 lg:px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition text-xs md:text-sm lg:text-base whitespace-nowrap"
               >
-                <span>🚪</span>
+                <span className="flex-shrink-0">🚪</span>
                 <span className="hidden lg:inline">Logout</span>
               </button>
 

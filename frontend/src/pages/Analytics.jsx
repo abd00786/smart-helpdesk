@@ -65,7 +65,7 @@ export default function Analytics() {
         </div>
 
         {/* Status Overview Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
           <StatCard 
             icon="📈" 
             label="Total Tickets" 

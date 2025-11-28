@@ -74,22 +74,22 @@ export default function ITSupport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-8 px-3 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">IT Support Tools</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">IT Support Tools</h1>
 
         {error && (
-          <div className="rounded-md bg-red-50 p-4 mb-4">
-            <p className="text-red-700">{error}</p>
+          <div className="rounded-lg bg-red-50 p-3 sm:p-4 mb-4 border border-red-200">
+            <p className="text-sm sm:text-base text-red-700">{error}</p>
           </div>
         )}
 
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white rounded-lg shadow-lg">
           {/* Tabs */}
-          <div className="flex border-b">
+          <div className="flex border-b overflow-x-auto">
             <button
               onClick={() => setActiveTab("system")}
-              className={`px-6 py-4 font-semibold ${
+              className={`px-3 sm:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-base whitespace-nowrap ${
                 activeTab === "system"
                   ? "border-b-2 border-blue-600 text-blue-600"
                   : "text-gray-600"

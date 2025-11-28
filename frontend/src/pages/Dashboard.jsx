@@ -64,23 +64,23 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
           {stats.map((stat, idx) => (
             <button
               key={idx}
               onClick={stat.action}
-              className={`rounded-lg sm:rounded-xl bg-linear-to-br ${stat.color} p-4 sm:p-6 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition cursor-pointer`}
+              className={`rounded-lg md:rounded-xl bg-linear-to-br ${stat.color} p-4 md:p-5 lg:p-6 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition cursor-pointer`}
             >
-              <div className="text-3xl sm:text-4xl mb-2">{stat.icon}</div>
-              <div className="text-base sm:text-lg font-semibold">{stat.label}</div>
+              <div className="text-3xl md:text-4xl mb-2">{stat.icon}</div>
+              <div className="text-sm md:text-base lg:text-lg font-semibold">{stat.label}</div>
             </button>
           ))}
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
           {/* Create Ticket Form - Takes 2 cols */}
-          <div className="lg:col-span-2 bg-white rounded-lg sm:rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8">
+          <div className="md:col-span-2 lg:col-span-2 bg-white rounded-lg md:rounded-xl lg:rounded-2xl shadow-lg p-4 md:p-5 lg:p-8">
             <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 flex-wrap">
               <span className="text-2xl sm:text-3xl">📝</span>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Create New Ticket</h2>

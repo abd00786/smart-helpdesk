@@ -67,7 +67,7 @@ export default function Tickets() {
             <span className="text-xl sm:text-2xl">🔍</span>
             <h3 className="text-base sm:text-lg font-bold text-gray-900">Filter Tickets</h3>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             <div>
               <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Status</label>
               <select
@@ -116,7 +116,7 @@ export default function Tickets() {
         )}
 
         {tickets.length > 0 ? (
-          <div className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
             {tickets.map((ticket) => (
               <div
                 key={ticket._id}
