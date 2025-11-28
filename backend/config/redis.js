@@ -3,28 +3,33 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const redisClient = createClient({
-  host: process.env.REDIS_HOST || "localhost",
-  port: process.env.REDIS_PORT || 6379,
-  password: process.env.REDIS_PASSWORD || undefined,
-  socket: {
-    reconnectStrategy: (retries) => {
-      if (retries > 10) {
-        console.error("Redis max retries exceeded");
-        return new Error("Redis max retries exceeded");
-      }
-      return retries * 50;
-    },
-  },
-});
+// If no REDIS_URL exists, run without redis
+const redisUrl = process.env.REDIS_URL;
 
-redisClient.on("error", (err) => console.error("Redis Client Error", err));
-redisClient.on("connect", () => console.log("✓ Redis connected"));
-redisClient.on("ready", () => console.log("✓ Redis ready"));
+let redisClient = null;
 
-// Connect to Redis
-await redisClient.connect().catch((err) => {
-  console.warn("⚠️ Redis connection failed. Running without cache:", err.message);
-});
+try {
+  if (redisUrl) {
+    redisClient = createClient({ url: redisUrl });
+
+    redisClient.on("error", (err) => {
+      console.error("Redis Error:", err.message);
+    });
+
+    await redisClient.connect().catch((err) => {
+      console.warn("⚠️ Redis failed, continuing without cache:", err.message);
+      redisClient = null; // disable redis safely
+    });
+
+    if (redisClient) {
+      console.log("✓ Redis Connected");
+    }
+  } else {
+    console.warn("⚠️ No REDIS_URL found. Running without Redis cache.");
+  }
+} catch (err) {
+  console.warn("⚠️ Redis init failed:", err.message);
+  redisClient = null;
+}
 
 export default redisClient;
